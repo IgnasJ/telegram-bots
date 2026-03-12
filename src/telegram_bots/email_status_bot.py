@@ -138,7 +138,13 @@ def send_telegram_message(token: str, chat_id: str, text: str) -> None:
         with urlopen(request, timeout=30) as response:
             response.read()
     except HTTPError as exc:
-        raise RuntimeError(f"Telegram API returned HTTP {exc.code}.") from exc
+        response_body = exc.read().decode("utf-8", errors="replace")
+        try:
+            parsed = json.loads(response_body)
+            description = parsed.get("description") or response_body
+        except json.JSONDecodeError:
+            description = response_body or "no error details returned"
+        raise RuntimeError(f"Telegram API returned HTTP {exc.code}: {description}") from exc
     except URLError as exc:
         raise RuntimeError("Unable to reach Telegram API.") from exc
 
