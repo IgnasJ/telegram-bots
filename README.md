@@ -1,6 +1,6 @@
 # Telegram Bots
 
-This repository is structured as a package so multiple Telegram bots can live in one codebase. The first bot checks multiple email inboxes over IMAP and sends a Telegram status message every 6 hours using GitHub Actions.
+This repository is structured as a package so multiple Telegram bots can live in one codebase. The first bot checks multiple email inboxes over IMAP and sends a Telegram status message twice daily using GitHub Actions.
 
 ## Project layout
 
@@ -20,7 +20,7 @@ Current bot modules:
 - Connects to each mailbox using IMAP.
 - Counts unread emails and includes up to 3 previews per inbox.
 - Sends one consolidated Telegram message.
-- Runs every 6 hours and can also be started manually from GitHub Actions.
+- Runs at 08:00 and 20:00 UTC and can also be started manually from GitHub Actions.
 
 ## Required GitHub secrets
 
@@ -87,7 +87,7 @@ python -m telegram_bots.email_status_runner
 The workflow is in `.github/workflows/email-status-bot.yml` and runs with this cron:
 
 ```text
-0 */6 * * *
+0 8,20 * * *
 ```
 
-GitHub schedules use UTC. That means the job runs every 6 hours based on UTC time.
+GitHub schedules use UTC. That means the job runs daily at 08:00 UTC and 20:00 UTC.
